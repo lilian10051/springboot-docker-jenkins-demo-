@@ -1,0 +1,4 @@
+.git
+.env
+target/*
+!target/springbasic-0.0.1-SNAPSHOT.jar
