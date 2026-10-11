@@ -40,7 +40,6 @@ The project is also designed to demonstrate DevOps practices by using Docker to 
 
 ```text
 springboot-docker-jenkins-demo/
-│
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -48,28 +47,22 @@ springboot-docker-jenkins-demo/
 │   │   │       └── example/
 │   │   │           ├── springbasic/
 │   │   │           │   └── SpringbasicApplication.java
-│   │   │           │
 │   │   │           ├── controller/
 │   │   │           │   └── DemoController.java
-│   │   │           │
 │   │   │           ├── entity/
 │   │   │           │   ├── Person.java
 │   │   │           │   └── Student.java
-│   │   │           │
 │   │   │           └── repos/
 │   │   │               ├── PersonRepo.java
 │   │   │               └── StudentRepo.java
-│   │   │
 │   │   └── resources/
 │   │       └── application.properties
-│   │
 │   └── test/
 │       └── java/
 │           └── com/
 │               └── example/
 │                   └── springbasic/
 │                       └── SpringbasicApplicationTests.java
-│
 ├── Dockerfile
 ├── .dockerignore
 ├── Jenkinsfile
@@ -78,57 +71,37 @@ springboot-docker-jenkins-demo/
 └── README.md
 ```
 
-> **Note:** This is the intended project layout. Adjust the package names and file names to match your actual source code. The `Dockerfile`, `.dockerignore`, and `Jenkinsfile` should be added as you implement the Docker and Jenkins stages.
+*Note: This is the intended project structure. Adjust filenames and package names to match your actual source code.*
 
 ## ⚙️ Application Components
 
 ### 1. Spring Boot Application
 
-`SpringbasicApplication.java`
-
-The main entry point of the application. It starts the embedded web server and initializes the Spring application context.
+`SpringbasicApplication.java` is the main entry point. It starts the Spring application and embedded web server.
 
 ### 2. Controller Layer
 
-`DemoController.java`
-
-Handles incoming HTTP requests and returns responses to clients. This layer exposes REST endpoints for testing API functionality.
+`DemoController.java` handles incoming HTTP requests and returns responses to clients.
 
 ### 3. Entity Layer
 
-The `entity` package contains the Java classes mapped to database tables.
-
-Examples:
-
-* `Person.java`
-* `Student.java`
-
-These classes use JPA annotations such as `@Entity`, `@Id`, and `@GeneratedValue` to define database entities.
+The `entity` package contains Java classes mapped to database tables, such as `Person.java` and `Student.java`.
 
 ### 4. Repository Layer
 
-The `repos` package contains interfaces for database access.
-
-Examples:
-
-* `PersonRepo.java`
-* `StudentRepo.java`
-
-These interfaces extend `JpaRepository`, providing CRUD operations without requiring you to implement the basic database queries manually.
+The `repos` package contains interfaces such as `PersonRepo.java` and `StudentRepo.java`, which extend `JpaRepository` to provide CRUD operations.
 
 ### 5. Configuration
 
-`application.properties`
+`application.properties` stores database connection details, server configuration, and JPA settings.
 
-Stores application configuration, including the server port, MySQL connection details, and JPA settings.
-
-**Important:** Do not commit real database passwords, API keys, or other secrets to GitHub. Use environment variables or another secure configuration method for sensitive values.
+**Security:** Never commit actual passwords, API keys, or other secrets to GitHub.
 
 ## 🗄️ Database Configuration
 
 The application uses MySQL as its relational database.
 
-Example configuration for `src/main/resources/application.properties`:
+Example `application.properties`:
 
 ```properties
 spring.application.name=springbasic
@@ -153,19 +126,18 @@ Hibernate can create or update tables for correctly configured and discovered JP
 
 ### Prerequisites
 
-Install the following tools:
+Install the following:
 
-* Java Development Kit (JDK) 17 or a compatible version supported by your Spring Boot release.
+* Java Development Kit (JDK) compatible with your Spring Boot version.
 * Maven.
 * MySQL Server.
 * Git.
-
-Docker and Jenkins are required for the containerization and CI/CD stages.
+* Docker and Jenkins for the DevOps stages.
 
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/springboot-docker-jenkins-demo.git
+git clone https://github.com/lilian10051/springboot-docker-jenkins-demo.git
 ```
 
 Navigate into the project directory:
@@ -173,8 +145,6 @@ Navigate into the project directory:
 ```bash
 cd springboot-docker-jenkins-demo
 ```
-
-Replace `YOUR_USERNAME` with your GitHub username.
 
 ### Step 2: Configure MySQL
 
@@ -184,24 +154,17 @@ Create the database:
 CREATE DATABASE springbasic_db;
 ```
 
-Configure your MySQL username and password using environment variables.
-
-For example, in Windows PowerShell:
+In Windows PowerShell, configure your database credentials:
 
 ```powershell
 $env:DB_USERNAME="root"
 $env:DB_PASSWORD="your_mysql_password"
-```
-
-Set `DB_URL` if your database uses a different connection URL:
-
-```powershell
 $env:DB_URL="jdbc:mysql://localhost:3306/springbasic_db"
 ```
 
-### Step 3: Build the Application
+Replace `your_mysql_password` with your actual MySQL password.
 
-Run the following Maven command:
+### Step 3: Build the Application
 
 ```bash
 mvn clean package
@@ -215,17 +178,13 @@ This command cleans previous build artifacts, compiles the source code, runs tes
 mvn spring-boot:run
 ```
 
-By default, the application is available at:
+The application should be available at:
 
-```text
-http://localhost:8080
-```
-
-Use the API endpoints implemented in `DemoController.java` to test the application.
+`http://localhost:8080`
 
 ## 🌐 REST API
 
-The application can expose endpoints such as the following, depending on the methods implemented in `DemoController.java`.
+The application may expose endpoints such as these, depending on your `DemoController.java` implementation.
 
 | HTTP Method | Endpoint          | Purpose                            |
 | ----------- | ----------------- | ---------------------------------- |
@@ -234,27 +193,17 @@ The application can expose endpoints such as the following, depending on the met
 | GET         | `/api/demo/xml`   | Demonstrates an XML response       |
 | GET         | `/api/demo/users` | Demonstrates a collection response |
 
-Example request:
+Test an endpoint with:
 
 ```bash
 curl http://localhost:8080/api/demo/hello
 ```
 
-The actual endpoints and response formats depend on your controller implementation.
-
 ## 🐳 Docker
 
-Docker will be used to package the Spring Boot application and its runtime into a container image.
+Docker will package the Spring Boot application and its runtime into a container image.
 
-Planned Docker workflow:
-
-1. Build the Spring Boot application.
-2. Create a Docker image.
-3. Run the application inside a container.
-4. Configure the application to connect to MySQL.
-5. Verify the API from outside the container.
-
-Example commands after creating the `Dockerfile`:
+Build the image after creating the `Dockerfile`:
 
 ```bash
 docker build -t springboot-docker-jenkins-demo .
@@ -266,17 +215,17 @@ Run the container:
 docker run -p 8080:8080 springboot-docker-jenkins-demo
 ```
 
-**Note:** The container also needs valid database configuration and network access to MySQL. The example run command assumes these have been configured.
+Configure database connectivity and credentials before running the container. The command above assumes those settings are already handled.
 
 ## 🔄 Jenkins CI/CD
 
 Jenkins will automate the application's build and testing process.
 
-The planned pipeline stages are:
+Planned pipeline stages:
 
 1. **Checkout** — Retrieve source code from GitHub.
-2. **Build** — Compile the Spring Boot application using Maven.
-3. **Test** — Execute automated tests.
+2. **Build** — Compile the application using Maven.
+3. **Test** — Run automated tests.
 4. **Package** — Generate the executable JAR file.
 5. **Docker Build** — Build the container image.
 6. **Deployment** — Optionally deploy the application to a server or cloud environment.
@@ -285,46 +234,44 @@ The pipeline will be defined in a `Jenkinsfile` at the project root.
 
 ## 🧪 Testing
 
-Run the automated tests using:
+Run automated tests:
 
 ```bash
 mvn test
 ```
 
-Run the complete build:
+Run the complete Maven verification lifecycle:
 
 ```bash
 mvn clean verify
 ```
 
-Tests can be added to verify controller responses, repository operations, and database integration.
-
 ## 🔐 Security Considerations
 
-* Do not store passwords or secrets in source code.
+* Never store database passwords or secrets in source code.
 * Avoid exposing MySQL directly to the public internet.
-* Restrict SSH and application access to trusted networks where possible.
-* Use secure Jenkins credentials for GitHub and deployment secrets.
-* Use environment variables or a secrets manager for sensitive configuration.
+* Restrict SSH access to trusted sources.
+* Use Jenkins credentials for sensitive pipeline settings.
 * Keep Java, Spring Boot, MySQL, Docker, and Jenkins updated.
 
 ## 📈 Future Improvements
 
-* Add complete CRUD operations for Person and Student.
+* Implement complete CRUD operations for Person and Student.
 * Add request validation and exception handling.
 * Write unit and integration tests.
 * Add Docker Compose for the application and MySQL.
 * Configure Jenkins to build Docker images automatically.
 * Push images to a container registry.
 * Deploy the application to an AWS EC2 instance.
-* Add monitoring and application health checks.
+* Add monitoring and health checks.
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Lilian**
 
-GitHub: `https://github.com/YOUR_USERNAME`
+* GitHub: [lilian10051 on GitHub](https://github.com/lilian10051?utm_source=chatgpt.com)
+* Repository: [springboot-docker-jenkins-demo](https://github.com/lilian10051/springboot-docker-jenkins-demo?utm_source=chatgpt.com)
 
 ## 📄 License
 
-This project is intended for educational and demonstration purposes. Add a `LICENSE` file if you intend to distribute the project under a specific open-source license.
+This project is intended for educational and demonstration purposes. Add a `LICENSE` file if you intend to distribute it under a specific open-source license.
